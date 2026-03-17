@@ -24,7 +24,14 @@
         .status-soldout { background: #2a1f1f; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
         .status-available { background: #1f2a1f; color: #4ade80; border: 1px solid #4ade80; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        .products { padding: 12px; }
+        .store-header { padding: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2a2a3e; cursor: pointer; transition: background 0.2s; user-select: none; }
+        .store-header:hover { background: #1a1a2e; }
+        .store-header-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .store-header-right { display: flex; align-items: center; gap: 12px; }
+        .accordion-toggle { font-size: 0.9rem; color: #888; transition: transform 0.3s ease; }
+        .accordion-toggle.expanded { transform: rotate(180deg); }
+        .products { padding: 0 12px; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease; }
+        .products.expanded { padding: 12px; max-height: 500px; opacity: 1; }
         .product-item { background: #0f0f1a; border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; }
         .product-image { width: 60px; height: 60px; background: #1a1a2e; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
         .product-name { font-size: 0.9rem; font-weight: 600; }
@@ -103,6 +110,22 @@
             el.textContent = `업데이트: ${timeStr}`;
         }
 
+        // 아코디언 토글 기능
+        function toggleAccordion(header) {
+            const products = header.nextElementSibling;
+            const toggle = header.querySelector('.accordion-toggle');
+            const isExpanded = products.classList.contains('expanded');
+            
+            // Toggle current accordion
+            if (isExpanded) {
+                products.classList.remove('expanded');
+                toggle.classList.remove('expanded');
+            } else {
+                products.classList.add('expanded');
+                toggle.classList.add('expanded');
+            }
+        }
+
         // GitHub에서 status.json 로드 (GitHub Pages용 - raw.githubusercontent.com) v2
         async function fetchStatus() {
             try {
@@ -135,15 +158,18 @@
                 
                 html += `
                     <div class="store-card ${store.color}">
-                        <div class="store-header">
-                            <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="store-header" onclick="toggleAccordion(this)">
+                            <div class="store-header-left">
                                 <div class="store-logo">${store.logo}</div>
                                 <div>
                                     <div class="store-name">${store.name}</div>
                                 </div>
                             </div>
-                            <div class="${isAvailable ? 'status-available' : 'status-soldout'}">
-                                ${isAvailable ? '✅ 입고' : '❌ 품절'}
+                            <div class="store-header-right">
+                                <div class="${isAvailable ? 'status-available' : 'status-soldout'}">
+                                    ${isAvailable ? '✅ 입고' : '❌ 품절'}
+                                </div>
+                                <span class="accordion-toggle">▼</span>
                             </div>
                         </div>
                         <div class="products">
