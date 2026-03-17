@@ -1,3 +1,13 @@
 {
-  "version": 2
+  "version": 2,
+  "routes": [
+    {
+      "src": "/status.json",
+      "dest": "/public/status.json"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
+    }
+  ]
 }
