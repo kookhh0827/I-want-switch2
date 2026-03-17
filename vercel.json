@@ -6,6 +6,10 @@
       "dest": "/public/status.json"
     },
     {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
