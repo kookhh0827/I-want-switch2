@@ -1,1 +1,47 @@
-{"timestamp": "2026-03-17T05:06:30.000Z", "test": true}
+{
+  "timestamp": "2026-03-17T05:06:36.791Z",
+  "checkTime": "2026. 3. 17. PM 2:06:34",
+  "stores": {
+    "nintendo": {
+      "name": "닌텐도 공식 스토어",
+      "status": "soldout",
+      "products": {
+        "regular": {
+          "inStock": false
+        },
+        "bundle": {
+          "inStock": false
+        }
+      }
+    },
+    "himart": {
+      "name": "하이마트",
+      "status": "soldout",
+      "products": {
+        "regular": {
+          "inStock": false
+        },
+        "bundle": {
+          "inStock": false
+        }
+      }
+    },
+    "eleven": {
+      "name": "11번가",
+      "status": "soldout",
+      "products": {
+        "regular": {
+          "inStock": false
+        },
+        "bundle": {
+          "inStock": false
+        }
+      }
+    }
+  },
+  "summary": {
+    "totalAvailable": 0,
+    "lastCheckHour": 14,
+    "notifyReason": "first-check"
+  }
+}
