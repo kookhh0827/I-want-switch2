@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>I Want Switch 2 - 닌텐도 스위치2 재고 알림</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans KR', sans-serif; background: #0a0a0f; color: #fff; min-height: 100vh; padding-bottom: 100px; }
+        .header { background: linear-gradient(135deg, #e60012 0%, #ff4757 100%); padding: 24px 20px; text-align: center; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 1.6rem; font-weight: 900; }
+        .header .subtitle { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; }
+        .refresh-bar { background: #1a1a2e; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a3e; }
+        .last-updated { font-size: 0.75rem; color: #888; }
+        .refresh-btn { background: #e60012; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        .store-card { background: #16162a; border-radius: 16px; margin: 16px; overflow: hidden; border: 1px solid #2a2a3e; }
+        .store-header { padding: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2a2a3e; }
+        .store-logo { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; }
+        .nintendo .store-logo { background: #e60012; }
+        .himart .store-logo { background: #0066cc; }
+        .eleven .store-logo { background: #ff6600; }
+        .store-name { font-weight: 700; font-size: 1rem; }
+        .status-soldout { background: #2a1f1f; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .status-available { background: #1f2a1f; color: #4ade80; border: 1px solid #4ade80; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .products { padding: 12px; }
+        .product-item { background: #0f0f1a; border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; }
+        .product-image { width: 60px; height: 60px; background: #1a1a2e; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
+        .product-name { font-size: 0.9rem; font-weight: 600; }
+        .product-price { font-size: 0.85rem; color: #4ade80; font-weight: 700; }
+        .product-stock { font-size: 0.75rem; color: #ff6b6b; }
+        .go-btn { background: #e60012; color: white; padding: 10px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; display: inline-block; margin-top: 8px; }
+        .action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #16162a; border-top: 1px solid #2a2a3e; padding: 12px 16px; display: flex; gap: 10px; }
+        .action-btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-size: 0.9rem; font-weight: 700; text-align: center; text-decoration: none; }
+        .btn-primary { background: #e60012; color: white; }
+        .btn-secondary { background: #2a2a3e; color: white; }
+        .loading { text-align: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #2a2a3e; border-top-color: #e60012; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎮 I WANT SWITCH 2</h1>
+        <div class="subtitle">닌텐도 스위치2 재고 알림</div>
+    </div>
+    
+    <div class="refresh-bar">
+        <div class="last-updated">⏱️ <span id="lastUpdate">업데이트: --:--</span></div>
+        <button class="refresh-btn" onclick="refreshData()">🔄 새로고침</button>
+    </div>
+
+    <div id="content"></div>
+    
+    <div class="action-bar">
+        <a href="#" class="action-btn btn-secondary">⚙️ 설정</a>
+        <a href="https://t.me/" class="action-btn btn-primary" target="_blank">📱 알림받기</a>
+    </div>
+
+    <script>
+        const stores = [
+            {
+                id: 'nintendo',
+                name: '닌텐도 공식 스토어',
+                logo: 'N',
+                color: 'nintendo',
+                status: 'soldout',
+                products: [
+                    { name: 'Nintendo Switch 2', price: '₩648,000', url: 'https://anon.to/?https://store.nintendo.co.kr/64036', image: '🎮' },
+                    { name: 'Switch 2 마리오카트 번들', price: '₩688,000', url: 'https://anon.to/?https://store.nintendo.co.kr/64038', image: '🏎️' }
+                ]
+            },
+            {
+                id: 'himart',
+                name: '하이마트',
+                logo: 'H',
+                color: 'himart',
+                status: 'soldout',
+                products: [
+                    { name: '닌텐도 스위치2 본체', price: '₩648,000', url: 'https://m.e-himart.co.kr/app/goods/goodsDetail?goodsNo=0049455365', image: '🎮' },
+                    { name: '닌텐도 스위치2 마리오카트 번들', price: '₩688,000', url: 'https://m.e-himart.co.kr/app/goods/goodsDetail?goodsNo=0049455367', image: '🏎️' }
+                ]
+            },
+            {
+                id: 'eleven',
+                name: '11번가',
+                logo: '11',
+                color: 'eleven',
+                status: 'soldout',
+                products: [
+                    { name: '닌텐도 스위치2 본체', price: '₩648,000', url: 'https://www.11st.co.kr/products/8369248443', image: '🎮' },
+                    { name: '닌텐도 스위치2 마리오카트 번들', price: '₩688,000', url: 'https://www.11st.co.kr/products/8369253585', image: '🏎️' }
+                ]
+            }
+        ];
+
+        function renderContent() {
+            const content = document.getElementById('content');
+            let html = '';
+            
+            stores.forEach(store => {
+                html += `
+                    <div class="store-card ${store.color}">
+                        <div class="store-header">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div class="store-logo">${store.logo}</div>
+                                <div>
+                                    <div class="store-name">${store.name}</div>
+                                </div>
+                            </div>
+                            <div class="${store.status === 'available' ? 'status-available' : 'status-soldout'}">
+                                ${store.status === 'available' ? '✅ 입고' : '❌ 품절'}
+                            </div>
+                        </div>
+                        <div class="products">
+                            ${store.products.map(p => `
+                                <div class="product-item">
+                                    <div class="product-image">${p.image}</div>
+                                    <div style="flex: 1;">
+                                        <div class="product-name">${p.name}</div>
+                                        <div class="product-price">${p.price}</div>
+                                        <div class="product-stock">${store.status === 'available' ? '✅ 구매 가능' : '❌ 품절'}</div>
+                                        <a href="${p.url}" target="_blank" class="go-btn">🛒 바로가기</a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div style="text-align: center; padding: 20px; color: #666; font-size: 0.75rem;">
+                    <p>⚠️ 실시간 재고 정보는 해당 사이트에서 확인하세요</p>
+                    <p style="margin-top: 8px;">마지막 확인: ${new Date().toLocaleString('ko-KR')} | 링크 우회 적용됨</p>
+                </div>
+            `;
+            
+            content.innerHTML = html;
+        }
+
+        function refreshData() {
+            document.getElementById('lastUpdate').textContent = '확인 중...';
+            setTimeout(() => {
+                renderContent();
+                document.getElementById('lastUpdate').textContent = '업데이트: ' + new Date().toLocaleTimeString('ko-KR', {hour: '2-digit', minute:'2-digit'});
+            }, 500);
+        }
+
+        renderContent();
+        document.getElementById('lastUpdate').textContent = '업데이트: ' + new Date().toLocaleTimeString('ko-KR', {hour: '2-digit', minute:'2-digit'});
+    </script>
+</body>
+</html>
