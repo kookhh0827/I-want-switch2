@@ -102,10 +102,11 @@
             el.textContent = `업데이트: ${timeStr}`;
         }
 
-        // GitHub에서 status.json 로드
+        // GitHub에서 status.json 로드 (GitHub Pages용 - raw.githubusercontent.com)
         async function fetchStatus() {
             try {
-                const response = await fetch('/status.json?' + Date.now(), {
+                // GitHub raw content URL (CORS 허용됨)
+                const response = await fetch('https://raw.githubusercontent.com/kookhh0827/I-want-switch2/master/status.json?' + Date.now(), {
                     cache: 'no-cache'
                 });
                 if (!response.ok) throw new Error('Network response was not ok');
