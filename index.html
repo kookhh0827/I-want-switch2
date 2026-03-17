@@ -118,7 +118,7 @@
                 renderContent(status);
             } catch (error) {
                 console.error('Failed to fetch status:', error);
-                document.getElementById('lastUpdate').textContent = '업데이트: 오류';
+                document.getElementById('lastUpdate').textContent = '업데이트: 오류 - ' + error.message;
                 renderFallback();
             }
         }
