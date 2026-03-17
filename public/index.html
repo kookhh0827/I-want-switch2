@@ -107,7 +107,7 @@
         async function fetchStatus() {
             try {
                 // GitHub raw content URL (CORS 허용됨)
-                const response = await fetch('https://raw.githubusercontent.com/kookhh0827/I-want-switch2/master/public/status.json?' + Date.now(), {
+                const response = await fetch('/status.json?' + Date.now(), {
                     cache: 'no-cache'
                 });
                 if (!response.ok) throw new Error('Network response was not ok');
