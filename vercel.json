@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "I-want-switch2",
+  "name": "i-want-switch2",
   "builds": [
     {
       "src": "index.html",
