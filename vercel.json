@@ -1,13 +1,10 @@
 {
   "version": 2,
-  "name": "i-want-switch2",
-  "builds": [
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
-  ],
   "routes": [
+    {
+      "src": "/status.json",
+      "dest": "/public/status.json"
+    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
