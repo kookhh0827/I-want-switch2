@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-21T16:00:15.085Z",
-  "checkTime": "2026. 3. 22. AM 1:00:13",
+  "timestamp": "2026-03-21T16:01:19.408Z",
+  "checkTime": "2026. 3. 22. AM 1:01:17",
   "stores": {
     "nintendo": {
       "name": "닌텐도 공식 스토어",
@@ -42,6 +42,6 @@
   "summary": {
     "totalAvailable": 0,
     "lastCheckHour": 1,
-    "notifyReason": "top-of-hour"
+    "notifyReason": "first-check"
   }
 }
